@@ -60,7 +60,6 @@ def branch(pl, segment_info, status_colors=False):
 	name = segment_info['getcwd']()
 	repo = guess(path=name)
 	if repo is not None:
-		print repo
 		branch = repo.branch()
 		scol = ['branch']
 		if status_colors:

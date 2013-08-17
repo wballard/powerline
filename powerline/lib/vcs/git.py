@@ -188,10 +188,10 @@ except ImportError:
 			for line in self._gitcmd(self.directory, "for-each-ref", "--format=%(refname:short) %(upstream:short)", "refs/heads"):
 				local, remote = line.split(' ')
 				tracking[local] = remote
-			remote = tracking[self.branch()]
+			remote = tracking.get(self.branch(), '')
+			push = 0
+			pull = 0
 			if remote:
-				push = 0
-				pull = 0
 				for line in self._gitcmd(self.directory, "rev-list", "--left-right", "{0}...HEAD".format(remote)):
 					if line[0] == '>':
 						push += 1
