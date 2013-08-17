@@ -8,6 +8,10 @@ from powerline.lib.vcs import get_branch_name as _get_branch_name, get_file_stat
 
 _ref_pat = re.compile(br'ref:\s*refs/heads/(.+)')
 
+class Struct:
+	def __init__(self, entries):
+		self.__dict__.update(entries)
+
 def branch_name_from_config_file(directory, config_file):
 	try:
 		with open(config_file, 'rb') as f:
@@ -178,6 +182,25 @@ except ImportError:
 
 		def status(self, path=None):
 			return do_status(self.directory, path, self.do_status)
+
+		def push_pull(self):
+			tracking = {}
+			for line in self._gitcmd(self.directory, "for-each-ref", "--format=%(refname:short) %(upstream:short)", "refs/heads"):
+				local, remote = line.split(' ')
+				tracking[local] = remote
+			remote = tracking[self.branch()]
+			if remote:
+				push = 0
+				pull = 0
+				for line in self._gitcmd(self.directory, "rev-list", "--left-right", "{0}...HEAD".format(remote)):
+					if line[0] == '>':
+						push += 1
+					if line[0] == '<':
+						pull += 1
+			return Struct({
+				'push': push,
+				'pull': pull
+				})
 
 		def branch(self):
 			return get_branch_name(self.directory)
