@@ -82,7 +82,7 @@ def branch_behind(pl, segment_info):
 		if push_pull.push:
 			content += u'➚{0}'.format(push_pull.push)
 		if push_pull.pull:
-			content += u'➘{1}'.format(push_pull.pull)
+			content += u'➘{0}'.format(push_pull.pull)
 		return [{
 			'contents': content,
 			'highlight_group': 'branch_dirty' if status and status.strip() else 'branch_clean'
